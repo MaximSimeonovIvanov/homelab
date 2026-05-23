@@ -21,12 +21,12 @@ Built as a learning project and portfolio piece. Everything is reproducible from
         [AdGuard]     [Nginx Proxy]   [WireGuard]
         DNS + Ads      Internal TLS    Remote Access
               │              │
-      ┌───────┴──────┐        │
-      │              │        │
-  [Nextcloud]   [Immich]      │
-  File Sync    Photo Mgmt     │
-      │              │        │
-      └──────────────┴────────┘
+      ┌───────┴──────┐       │
+      │              │       │
+  [Nextcloud]   [Immich]     │
+  File Sync    Photo Mgmt    │
+      │              │       │
+      └──────────────┴───────┘
               Docker Network
 ```
 
@@ -104,5 +104,5 @@ homelab/
 
 ## Author
 
-**Maxim Simeonov Ivanov** — CS student building a homelab from scratch.  
-[github.com/MaximSimeonovIvanov](https://github.com/MaximSimeonovIvanov)
+**Maxim Simeonov Ivanov** — Software Developer building a mini homelab from scratch.  
+- maksimivanov@tutamail.com
