@@ -1,0 +1,23 @@
+services:
+  wg-easy:
+    image: ghcr.io/wg-easy/wg-easy:latest
+    container_name: wg-easy
+    restart: unless-stopped
+    environment:
+      - LANG=en
+      - WG_HOST=${WG_HOST}               # Your public IP or dynamic DNS hostname
+      - PASSWORD_HASH=${PASSWORD_HASH}   # Bcrypt hash of your UI password
+      - WG_PORT=51820
+      - WG_DEFAULT_DNS=192.168.1.100     # Points VPN clients to AdGuard
+      - WG_ALLOWED_IPS=192.168.1.0/24, 10.8.0.0/24  # Split tunnel — home network only
+    volumes:
+      - /opt/docker/wireguard/data:/etc/wireguard
+    ports:
+      - "51820:51820/udp"   # WireGuard VPN port — must be forwarded on router
+      - "51821:51821/tcp"   # Web UI port — local only, proxied by NPM
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1

@@ -1,0 +1,9 @@
+services:
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    restart: unless-stopped
+    network_mode: host   # Required for DNS to work correctly on port 53
+    volumes:
+      - /opt/docker/adguard/work:/opt/adguardhome/work
+      - /opt/docker/adguard/conf:/opt/adguardhome/conf
