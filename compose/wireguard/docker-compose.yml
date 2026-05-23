@@ -8,8 +8,8 @@ services:
       - WG_HOST=${WG_HOST}               # Your public IP or dynamic DNS hostname
       - PASSWORD_HASH=${PASSWORD_HASH}   # Bcrypt hash of your UI password
       - WG_PORT=51820
-      - WG_DEFAULT_DNS=192.168.1.100     # Points VPN clients to AdGuard
-      - WG_ALLOWED_IPS=192.168.1.0/24, 10.8.0.0/24  # Split tunnel — home network only
+      - WG_DEFAULT_DNS=192.168.0.215     # Points VPN clients to AdGuard
+      - WG_ALLOWED_IPS=192.168.0.0/24, 10.8.0.0/24  # Split tunnel — home network only
     volumes:
       - /opt/docker/wireguard/data:/etc/wireguard
     ports:

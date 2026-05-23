@@ -31,7 +31,7 @@ docker compose up -d
 
 ### 2. Complete the web setup
 
-Navigate to `http://192.168.1.100:3000` from any browser on your network.
+Navigate to `http://192.168.0.215:3000` from any browser on your network.
 
 The setup wizard will walk through:
 - Admin username and password
@@ -40,7 +40,7 @@ The setup wizard will walk through:
 
 ### 3. Point your router DNS to AdGuard
 
-Log into your router and change the DNS server (under DHCP settings) from your ISP's default to `192.168.1.100`. This makes all devices use AdGuard automatically.
+Log into your router and change the DNS server (under DHCP settings) from your ISP's default to `192.168.0.215`. This makes all devices use AdGuard automatically.
 
 > Some routers call this "Primary DNS" under LAN or DHCP settings.
 
@@ -52,11 +52,11 @@ Add one entry per service:
 
 | Domain            | Answer        |
 |-------------------|---------------|
-| `nextcloud.home`  | 192.168.1.100 |
-| `immich.home`     | 192.168.1.100 |
-| `npm.home`        | 192.168.1.100 |
-| `wireguard.home`  | 192.168.1.100 |
-| `adguard.home`    | 192.168.1.100 |
+| `nextcloud.home`  | 192.168.0.215 |
+| `immich.home`     | 192.168.0.215 |
+| `npm.home`        | 192.168.0.215 |
+| `wireguard.home`  | 192.168.0.215 |
+| `adguard.home`    | 192.168.0.215 |
 
 ---
 

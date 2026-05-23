@@ -15,8 +15,8 @@ The network stack has three layers working together:
 ```
 Device asks: "what is nextcloud.home?"
         │
-   AdGuard Home (192.168.1.100:53)
-        │ returns: 192.168.1.100 (the server itself)
+   AdGuard Home (192.168.0.215:53)
+        │ returns: 192.168.0.215 (the server itself)
         │
    Nginx Proxy Manager (port 80/443)
         │ routes based on hostname
@@ -45,9 +45,9 @@ Phone/laptop (outside home network)
 
 | Host              | IP               | Notes                          |
 |-------------------|------------------|--------------------------------|
-| Router            | 192.168.1.1      | Default gateway                |
-| Server (OptiPlex) | 192.168.1.100    | Static via DHCP reservation    |
-| AdGuard Home      | 192.168.1.100:3000 (UI), :53 (DNS) | Runs on server |
+| Router            | 192.168.0.1      | Default gateway                |
+| Server (OptiPlex) | 192.168.0.215    | Static via DHCP reservation    |
+| AdGuard Home      | 192.168.0.215:3000 (UI), :53 (DNS) | Runs on server |
 | WireGuard subnet  | 10.8.0.0/24      | VPN clients get IPs here       |
 
 > Update these IPs to match your actual network once confirmed.
@@ -87,4 +87,4 @@ All services are accessible via `.home` subdomains on the local network:
 | `https://npm.home`         | Nginx Proxy Manager  |
 | `https://wireguard.home`   | WireGuard UI         |
 
-These are configured in AdGuard Home as DNS rewrites, all pointing to `192.168.1.100`.
+These are configured in AdGuard Home as DNS rewrites, all pointing to `192.168.0.215`.

@@ -27,7 +27,7 @@ You need to forward **UDP port 51820** from your router to the server.
 2. Find **Port Forwarding** (may be under NAT, Firewall, or Advanced)
 3. Add a rule:
    - External port: `51820`
-   - Internal IP: `192.168.1.100`
+   - Internal IP: `192.168.0.215`
    - Internal port: `51820`
    - Protocol: `UDP`
 
@@ -50,7 +50,7 @@ nano .env   # Fill in your public IP and a strong password
 docker compose up -d
 ```
 
-Navigate to `https://wireguard.home` (after NPM is configured) or `http://192.168.1.100:51821`.
+Navigate to `https://wireguard.home` (after NPM is configured) or `http://192.168.0.215:51821`.
 
 Create a client for each device (phone, laptop). Download the config or scan the QR code.
 
@@ -71,4 +71,4 @@ On your phone: connect to mobile data (turn off WiFi), then enable WireGuard.
 Verify the UDP 51820 port forward is correct in your router. Test with `nmap -sU -p 51820 your-public-ip` from another network.
 
 **Connected but no internet:**  
-Check `ALLOWED_IPS` in the client config. `0.0.0.0/0` routes all traffic through the VPN. Use `192.168.1.0/24, 10.8.0.0/24` if you only want to access home network (split tunnel).
+Check `ALLOWED_IPS` in the client config. `0.0.0.0/0` routes all traffic through the VPN. Use `192.168.0.0/24, 10.8.0.0/24` if you only want to access home network (split tunnel).

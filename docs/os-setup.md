@@ -165,7 +165,7 @@ Your server needs a stable local IP so other services can reliably reach it.
 1. Log into your router
 2. Find the DHCP client list and identify your server by hostname or MAC address
 3. Create a reservation (static lease) for that MAC address
-4. Assign it a fixed IP (e.g. `192.168.1.100`)
+4. Assign it a fixed IP (e.g. `192.168.0.215`)
 5. Reboot the server: `sudo reboot`
 
 Verify the IP stuck:

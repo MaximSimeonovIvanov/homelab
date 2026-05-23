@@ -4,7 +4,7 @@
 
 Nginx Proxy Manager (NPM) is an internal reverse proxy with a web UI. It runs on the server and routes traffic from clean `.home` hostnames to the correct Docker containers, adding HTTPS in the process.
 
-Without NPM, you'd access services by IP and port (e.g. `http://192.168.1.100:8080`). With NPM, you get `https://nextcloud.home` — clean, secure, and easy to remember.
+Without NPM, you'd access services by IP and port (e.g. `http://192.168.0.215:8080`). With NPM, you get `https://nextcloud.home` — clean, secure, and easy to remember.
 
 ---
 
@@ -13,7 +13,7 @@ Without NPM, you'd access services by IP and port (e.g. `http://192.168.1.100:80
 ```
 Browser: https://nextcloud.home
         │
-   AdGuard DNS resolves nextcloud.home → 192.168.1.100
+   AdGuard DNS resolves nextcloud.home → 192.168.0.215
         │
    NPM (listening on port 443)
         │ matches hostname "nextcloud.home"
@@ -42,7 +42,7 @@ docker compose up -d
 
 ### 2. Initial login
 
-Navigate to `http://192.168.1.100:81`
+Navigate to `http://192.168.0.215:81`
 
 Default credentials:
 - Email: `admin@example.com`
