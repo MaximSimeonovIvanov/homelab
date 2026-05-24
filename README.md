@@ -21,12 +21,12 @@ Built as a learning project and portfolio piece. Everything is reproducible from
         [AdGuard]     [Nginx Proxy]   [WireGuard]
         DNS + Ads      Internal TLS    Remote Access
               │              │
-      ┌───────┴──────┐        │
-      │              │        │
-  [Nextcloud]   [Immich]      │
-  File Sync    Photo Mgmt     │
-      │              │        │
-      └──────────────┴────────┘
+      ┌───────┴──────┐       │
+      │              │       │
+  [Nextcloud]   [Immich]     │
+  File Sync    Photo Mgmt    │
+      │              │       │
+      └──────────────┴───────┘
               Docker Network
 ```
 
