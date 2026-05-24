@@ -10,8 +10,10 @@ services:
       - WG_PORT=51820
       - WG_DEFAULT_DNS=192.168.0.215     # Points VPN clients to AdGuard
       - WG_ALLOWED_IPS=192.168.0.0/24, 10.8.0.0/24  # Split tunnel — home network only
+      - WG_IPTABLES_BACKEND=nftables
     volumes:
       - /opt/docker/wireguard/data:/etc/wireguard
+      - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"   # WireGuard VPN port — must be forwarded on router
       - "51821:51821/tcp"   # Web UI port — local only, proxied by NPM
