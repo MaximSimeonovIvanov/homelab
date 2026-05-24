@@ -54,7 +54,7 @@ Built as a learning project and portfolio piece. Everything is reproducible from
 | WireGuard (wg-easy) | VPN for remote access            | ✅ Running |
 | Nextcloud           | File sync (Google Drive alt.)    | ✅ Running |
 | Immich              | Photo management (Google Photos) | ✅ Running |
-| Portainer           | Docker GUI                       | 🔜 Planned |
+| Portainer           | Docker GUI                       | ✅ Running |
 
 ---
 
