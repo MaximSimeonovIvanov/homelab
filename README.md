@@ -21,12 +21,12 @@ Built as a learning project and portfolio piece. Everything is reproducible from
         [AdGuard]     [Nginx Proxy]   [WireGuard]
         DNS + Ads      Internal TLS    Remote Access
               │              │
-      ┌───────┴──────┐       │
-      │              │       │
-  [Nextcloud]   [Immich]     │
-  File Sync    Photo Mgmt    │
-      │              │       │
-      └──────────────┴───────┘
+      ┌───────┴──────┐        │
+      │              │        │
+  [Nextcloud]   [Immich]      │
+  File Sync    Photo Mgmt     │
+      │              │        │
+      └──────────────┴────────┘
               Docker Network
 ```
 
@@ -49,11 +49,11 @@ Built as a learning project and portfolio piece. Everything is reproducible from
 
 | Service             | Purpose                          | Status     |
 |---------------------|----------------------------------|------------|
-| AdGuard Home        | DNS resolver + network ad block  | 🔜 Planned |
-| Nginx Proxy Manager | Internal reverse proxy + HTTPS   | 🔜 Planned |
-| WireGuard (wg-easy) | VPN for remote access            | 🔜 Planned |
-| Nextcloud           | File sync (Google Drive alt.)    | 🔜 Planned |
-| Immich              | Photo management (Google Photos) | 🔜 Planned |
+| AdGuard Home        | DNS resolver + network ad block  | ✅ Running |
+| Nginx Proxy Manager | Internal reverse proxy + HTTPS   | ✅ Running |
+| WireGuard (wg-easy) | VPN for remote access            | ✅ Running |
+| Nextcloud           | File sync (Google Drive alt.)    | ✅ Running |
+| Immich              | Photo management (Google Photos) | ✅ Running |
 | Portainer           | Docker GUI                       | 🔜 Planned |
 
 ---
@@ -96,13 +96,17 @@ homelab/
 
 ## Progress Log
 
-| Date       | Milestone                        |
-|------------|----------------------------------|
-| 2026-05-23 | Repo initialized, planning done  |
+| Date       | Milestone                                          |
+|------------|----------------------------------------------------|
+| 2026-05-23 | Repo initialized, planning done                    |
+| 2026-05-23 | Ubuntu 26.04 LTS installed, server hardened        |
+| 2026-05-23 | Docker installed, AdGuard + NPM deployed           |
+| 2026-05-24 | WireGuard deployed, remote access confirmed        |
+| 2026-05-24 | Nextcloud 33 + Immich deployed, all services live  |
 
 ---
 
 ## Author
 
-**Maxim Simeonov Ivanov** — Software Developer building a mini homelab from scratch.  
-- maksimivanov@tutamail.com
+**Maxim Simeonov Ivanov** — CS student building a homelab from scratch.  
+[github.com/MaximSimeonovIvanov](https://github.com/MaximSimeonovIvanov)
