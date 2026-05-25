@@ -41,7 +41,7 @@ Built as a learning project and portfolio piece. Everything is reproducible from
 | RAM          | 16 GB DDR4                      |
 | Boot Drive   | 128 GB SSD                      |
 | Data Storage | HDD (to be added)               |
-| OS           | Ubuntu Server 26.04 LTS       |
+| OS           | Ubuntu Server 26.04 LTS         |
 
 ---
 
@@ -55,6 +55,9 @@ Built as a learning project and portfolio piece. Everything is reproducible from
 | Nextcloud           | File sync (Google Drive alt.)    | ✅ Running |
 | Immich              | Photo management (Google Photos) | ✅ Running |
 | Portainer           | Docker GUI                       | ✅ Running |
+| Homarr              | Home dashboard                   | ✅ Running |
+| Ntfy                | Self-hosted push notifications   | ✅ Running |
+| Uptime Kuma         | Service monitoring + alerting    | ✅ Running |
 
 ---
 
@@ -72,13 +75,21 @@ homelab/
 │       ├── nginx-proxy-manager.md
 │       ├── wireguard.md
 │       ├── nextcloud.md
-│       └── immich.md
+│       ├── immich.md
+│       ├── portainer.md
+│       ├── homarr.md
+│       ├── ntfy.md
+│       └── uptime-kuma.md
 ├── compose/
 │   ├── adguard/
 │   ├── nginx-proxy-manager/
 │   ├── wireguard/
 │   ├── nextcloud/
-│   └── immich/
+│   ├── immich/
+│   ├── portainer/
+│   ├── homarr/
+│   ├── ntfy/
+│   └── uptime-kuma/
 └── scripts/
     └── (automation scripts)
 ```
@@ -103,6 +114,8 @@ homelab/
 | 2026-05-23 | Docker installed, AdGuard + NPM deployed           |
 | 2026-05-24 | WireGuard deployed, remote access confirmed        |
 | 2026-05-24 | Nextcloud 33 + Immich deployed, all services live  |
+| 2026-05-25 | Homarr, Portainer added                            |
+| 2026-05-25 | Ntfy + Uptime Kuma deployed, monitoring live       |
 
 ---
 
