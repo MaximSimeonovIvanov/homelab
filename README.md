@@ -16,18 +16,28 @@ Built as a learning project and portfolio piece. Everything is reproducible from
                     [ Dell OptiPlex 7040 ]
                     Ubuntu Server 26.04 LTS
                              │
-              ┌──────────────┼──────────────┐
-              │              │              │
-        [AdGuard]     [Nginx Proxy]   [WireGuard]
-        DNS + Ads      Internal TLS    Remote Access
-              │              │
-      ┌───────┴──────┐       │
-      │              │       │
-  [Nextcloud]   [Immich]     │
-  File Sync    Photo Mgmt    │
-      │              │       │
-      └──────────────┴───────┘
-              Docker Network
+         ┌───────────────────┼───────────────────┐
+         │                   │                   │
+   [AdGuard]          [Nginx Proxy]         [WireGuard]
+   DNS + Ads           Rev. Proxy           Remote Access
+         │                   │
+   ┌─────┴──────┐            │
+   │            │            │
+[Nextcloud]  [Immich]        │
+File Sync   Photo Mgmt       │
+         │                   │
+         ├───────────────────┤
+         │                   │
+   [Portainer]           [Homarr]
+   Docker GUI            Dashboard
+         │                   │
+         ├───────────────────┤
+         │                   │
+    [Uptime Kuma]         [Ntfy]
+     Monitoring        Push Alerts
+         │                   │
+         └───────────────────┘
+               Docker Network
 ```
 
 ---
