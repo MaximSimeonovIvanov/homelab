@@ -101,7 +101,7 @@ homelab/
 │   ├── ntfy/
 │   └── uptime-kuma/
 └── scripts/
-    └── (automation scripts)
+    └── (automation scripts)   # To be added
 ```
 
 ---
