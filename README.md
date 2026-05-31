@@ -192,4 +192,5 @@ WireGuard in a Docker container using `WG_IPTABLES_BACKEND=nftables` manages its
 ## Author
 
 **Maxim Simeonov Ivanov** — CS student building a homelab from scratch.  
+📧 [maksimivanov@tutamail.com](mailto:maksimivanov@tutamail.com)  
 [github.com/MaximSimeonovIvanov](https://github.com/MaximSimeonovIvanov)
