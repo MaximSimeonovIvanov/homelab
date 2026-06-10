@@ -229,5 +229,5 @@ Docker automatically creates bind-mount directories when they don't exist, but c
 ## Author
 
 **Maxim Simeonov Ivanov** — CS student building a homelab from scratch.  
-📧 [maksimivanoff@tutamail.com](mailto:maksimivanoff@tutamail.com)  
+📧 [maksimivanov@tutamail.com](mailto:maksimivanoff@tutamail.com)  
 [github.com/MaximSimeonovIvanov](https://github.com/MaximSimeonovIvanov)
