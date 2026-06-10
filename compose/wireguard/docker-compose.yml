@@ -8,15 +8,28 @@ services:
       - WG_HOST=${WG_HOST}               # Your public IP or dynamic DNS hostname
       - PASSWORD_HASH=${PASSWORD_HASH}   # Bcrypt hash of your UI password
       - WG_PORT=51820
-      - WG_DEFAULT_DNS=1.1.1.1
+      # DNS set to AdGuard so VPN clients get ad blocking and .home resolution.
+      # Requires UFW rule allowing port 53 from 172.19.0.0/16 (wg-easy Docker
+      # network) — wg-easy NATs VPN DNS queries through its own Docker IP, so
+      # targeting 10.8.0.0/24 in UFW will never match. See docs/networking.md.
+      - WG_DEFAULT_DNS=192.168.0.215
+      # Split tunnel + Android workaround.
+      # Simple split tunnel (192.168.0.0/24, 10.8.0.0/24) routes only home
+      # network traffic through the VPN. Android ignores this and routes
+      # everything through the VPN anyway. The fix is to explicitly list all
+      # public IP ranges (every block that is NOT a private/reserved range),
+      # which forces Android to treat it as a proper split tunnel. The result
+      # is identical to a simple split tunnel on all other platforms.
       - WG_ALLOWED_IPS=192.168.0.0/24, 10.8.0.0/24, 0.0.0.0/5, 8.0.0.0/7, 11.0.0.0/8, 12.0.0.0/6, 16.0.0.0/4, 32.0.0.0/3, 64.0.0.0/2, 128.0.0.0/3, 160.0.0.0/5, 168.0.0.0/6, 172.0.0.0/12, 172.32.0.0/11, 172.64.0.0/10, 172.128.0.0/9, 173.0.0.0/8, 174.0.0.0/7, 176.0.0.0/4, 192.0.0.0/9, 192.128.0.0/11, 192.160.0.0/13, 192.169.0.0/16, 192.170.0.0/15, 192.172.0.0/14, 192.176.0.0/12, 192.192.0.0/10, 193.0.0.0/8, 194.0.0.0/7, 196.0.0.0/6, 200.0.0.0/5, 208.0.0.0/4
+      # Uses nftables inside the container for NAT and routing.
+      # This bypasses UFW's forward policy entirely.
       - WG_IPTABLES_BACKEND=nftables
     volumes:
       - /opt/docker/wireguard/data:/etc/wireguard
       - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"   # WireGuard VPN port — must be forwarded on router
-      - "51821:51821/tcp"   # Web UI port — local only, proxied by NPM
+      - "51821:51821/tcp"   # Web UI port — VPN only, proxied by NPM
     cap_add:
       - NET_ADMIN
       - SYS_MODULE

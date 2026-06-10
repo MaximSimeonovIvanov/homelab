@@ -1,0 +1,20 @@
+services:
+  slskd:
+    image: slskd/slskd:latest
+    container_name: slskd
+    user: "1000:1000"
+    restart: unless-stopped
+    ports:
+      - "5030:5030"
+    environment:
+      - SLSKD_REMOTE_CONFIGURATION=true
+    volumes:
+      - ./config:/app
+      - /mnt/ssd2/downloads:/downloads
+      - /mnt/ssd2/music:/music:ro
+    networks:
+      - arrstack
+
+networks:
+  arrstack:
+    external: true

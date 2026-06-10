@@ -1,0 +1,23 @@
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    # Runs as your user (UID/GID 1000) so it can read the music library.
+    # Pre-create the ./data directory and chown it before first run:
+    #   mkdir -p /opt/docker/navidrome/data
+    #   sudo chown -R 1000:1000 /opt/docker/navidrome/data
+    user: "1000:1000"
+    restart: unless-stopped
+    ports:
+      - "4533:4533"
+    environment:
+      ND_MUSICFOLDER: /music
+      ND_DATAFOLDER: /data
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+    volumes:
+      # Navidrome database and cache
+      - ./data:/data
+      # Music library — read-only. Lidarr writes here; Navidrome only reads.
+      # Update this path when the music library is moved to the HDD.
+      - /mnt/ssd2/music:/music:ro

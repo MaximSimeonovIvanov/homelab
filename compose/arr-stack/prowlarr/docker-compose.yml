@@ -1,0 +1,22 @@
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Sofia
+    ports:
+      - "9696:9696"
+    volumes:
+      - ./config:/config
+    networks:
+      - arrstack
+
+networks:
+  arrstack:
+    # Shared network with qBittorrent, Lidarr, and slskd.
+    # Allows inter-container communication by name (e.g. http://prowlarr:9696).
+    # Create it before first run: docker network create arrstack
+    external: true

@@ -1,0 +1,28 @@
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Sofia
+      - WEBUI_PORT=8090
+    ports:
+      - "8090:8090"    # Web UI
+      - "6881:6881"    # Torrent TCP
+      - "6881:6881/udp"# Torrent UDP
+    volumes:
+      - ./config:/config
+      # Shared with Lidarr — both containers must mount the same downloads path
+      # so Lidarr can find and import completed files.
+      # Update this path when moved to HDD.
+      - /mnt/ssd2/downloads:/downloads
+    networks:
+      - arrstack
+
+networks:
+  arrstack:
+    # Shared network with Lidarr, Prowlarr, and slskd.
+    # Create it before first run: docker network create arrstack
+    external: true

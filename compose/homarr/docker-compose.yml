@@ -6,6 +6,12 @@ services:
     volumes:
       - /opt/docker/homarr/configs:/app/data/configs
       - /opt/docker/homarr/icons:/app/public/icons
+      # Docker socket allows Homarr to display live container status in the UI
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "7575:7575"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://$(hostname -i):7575 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
