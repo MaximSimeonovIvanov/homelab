@@ -36,8 +36,18 @@ File Sync   Photo Mgmt       │
     [Uptime Kuma]         [Ntfy]
      Monitoring        Push Alerts
          │                   │
-         └───────────────────┘
-               Docker Network
+         ├───────────────────┤
+         │                   │
+   [Navidrome]           [Lidarr]
+   Music Server       Music Manager
+         │                   │
+         ├───────────────────┤
+         │                   │
+  [qBittorrent]         [Prowlarr]
+   Downloader        Indexer Manager
+         │                   │
+         └────────[slskd]────┘
+              Soulseek Client
 ```
 
 ---
@@ -60,7 +70,7 @@ File Sync   Photo Mgmt       │
 | Service             | Purpose                          | Status     |
 |---------------------|----------------------------------|------------|
 | AdGuard Home        | DNS resolver + network ad block  | ✅ Running |
-| Nginx Proxy Manager | Internal reverse proxy + HTTPS   | ✅ Running |
+| Nginx Proxy Manager | Internal reverse proxy           | ✅ Running |
 | WireGuard (wg-easy) | VPN for remote access            | ✅ Running |
 | Nextcloud           | File sync (Google Drive alt.)    | ✅ Running |
 | Immich              | Photo management (Google Photos) | ✅ Running |
@@ -68,6 +78,11 @@ File Sync   Photo Mgmt       │
 | Homarr              | Home dashboard                   | ✅ Running |
 | Ntfy                | Self-hosted push notifications   | ✅ Running |
 | Uptime Kuma         | Service monitoring + alerting    | ✅ Running |
+| Navidrome           | Music server (Spotify alt.)      | ✅ Running |
+| Lidarr              | Music library manager            | ✅ Running |
+| qBittorrent         | Torrent downloader               | ✅ Running |
+| Prowlarr            | Indexer manager                  | ✅ Running |
+| slskd               | Soulseek client                  | ✅ Running |
 
 ---
 
@@ -80,6 +95,7 @@ homelab/
 │   ├── hardware.md            # Hardware details and notes
 │   ├── os-setup.md            # Ubuntu Server install + hardening
 │   ├── networking.md          # Network architecture, DNS, VPN
+│   ├── known-limitations.md   # Current known issues and workarounds
 │   └── services/
 │       ├── adguard.md
 │       ├── nginx-proxy-manager.md
@@ -89,7 +105,12 @@ homelab/
 │       ├── portainer.md
 │       ├── homarr.md
 │       ├── ntfy.md
-│       └── uptime-kuma.md
+│       ├── uptime-kuma.md
+│       ├── navidrome.md
+│       ├── lidarr.md
+│       ├── qbittorrent.md
+│       ├── prowlarr.md
+│       └── slskd.md
 ├── compose/
 │   ├── adguard/
 │   ├── nginx-proxy-manager/
@@ -99,7 +120,12 @@ homelab/
 │   ├── portainer/
 │   ├── homarr/
 │   ├── ntfy/
-│   └── uptime-kuma/
+│   ├── uptime-kuma/
+│   ├── navidrome/
+│   ├── lidarr/
+│   ├── qbittorrent/
+│   ├── prowlarr/
+│   └── slskd/
 └── scripts/
     └── (automation scripts)   # To be added
 ```
@@ -112,7 +138,7 @@ homelab/
 
 AdGuard Home handles all DNS resolution. It runs with `network_mode: host` so it binds directly to the server's network interfaces on port 53.
 
-Devices use AdGuard as their DNS server, configured manually per device (not via router — the router is shared). AdGuard resolves `.home` domain names to `192.168.0.215` via DNS rewrites, enabling clean local URLs like `nextcloud.home` instead of raw IP:port addresses.
+Devices use AdGuard as their DNS server, configured manually per device (not via router — the router is shared with another household). AdGuard resolves `.home` domain names to `192.168.0.215` via DNS rewrites, enabling clean local URLs like `nextcloud.home` instead of raw IP:port addresses.
 
 ```
 Device DNS query → AdGuard (192.168.0.215:53) → Quad9 DoH upstream → answer
@@ -137,19 +163,23 @@ VPN clients are configured with split tunnel — only traffic destined for the h
 
 ### Firewall (UFW)
 
-UFW is configured with a strict default-deny incoming policy. All private services (Portainer, AdGuard UI, Homarr, etc.) are restricted to VPN clients only (`10.8.0.0/24`). Only ports 22 (SSH), 80 (HTTP), 443 (HTTPS), and 51820 (WireGuard) are open to the internet.
+UFW is configured with a strict default-deny incoming policy. All private services are restricted to VPN clients only (`10.8.0.0/24`). Only ports 22 (SSH), 80 (HTTP), 443 (HTTPS), and 51820 (WireGuard) are open to the internet.
 
 ```
 Internet-facing:  22/tcp, 80/tcp, 443/tcp, 51820/udp
-VPN-only:         3000, 3001, 5555, 7575, 9000, 51821
-DNS:              53 — local network + wg-easy Docker network only
+VPN-only:         3000, 3001, 4533, 5030, 5555, 7575, 8090, 8686, 9000, 9696, 51821
+DNS:              53 — local network (192.168.0.0/24) + wg-easy Docker network (172.19.0.0/16)
 ```
+
+### Public-Facing Website
+
+This server also hosts `sim-obleklo.bg`, a production e-commerce site proxied through Cloudflare. Traffic flows: `Cloudflare → NPM (ports 80/443) → application containers`. This is why ports 80 and 443 are open to the internet. For full details see the [workwear catalog repository](https://github.com/MaximSimeonovIvanov/workwear-catalog).
 
 ---
 
 ## Guiding Principles
 
-- **Privacy first** — self-hosted replacements for Google Drive, Google Photos
+- **Privacy first** — self-hosted replacements for Google Drive, Google Photos, Spotify
 - **Documented and reproducible** — every step written up, no tribal knowledge
 - **Security minded** — VPN over open ports, firewall enforced, no secrets committed
 - **Educational** — built to understand the *why*, not just copy-paste
@@ -172,25 +202,32 @@ When WireGuard connects, `wg-quick` applies the `DNS =` setting from the config 
 **UFW's `DEFAULT_FORWARD_POLICY` and containerised WireGuard.**
 WireGuard in a Docker container using `WG_IPTABLES_BACKEND=nftables` manages its own NAT and routing rules inside the container via nftables. This completely bypasses UFW's forward policy. Setting `DEFAULT_FORWARD_POLICY=DROP` in UFW does not affect WireGuard traffic in this setup — but it should still be set to `ACCEPT` for correctness and to avoid silently blocking any future service that needs packet forwarding at the host level.
 
+**Docker network isolation is real.**
+Containers on different networks cannot communicate even when running on the same physical server. Services that need to talk to each other (like Lidarr → qBittorrent → Prowlarr) must be placed on a shared network. In this homelab, the `arrstack` network connects all music pipeline containers. Use container names (not IPs) for inter-container communication — Docker resolves names automatically within a shared network.
+
+**Pre-create data directories and set ownership before starting containers.**
+Docker automatically creates bind-mount directories when they don't exist, but creates them owned by `root`. Containers that run as non-root users (specified via `user: "1000:1000"`) will fail with permission errors. Always `mkdir` and `chown` data directories before `docker compose up`.
+
 ---
 
 ## Progress Log
 
-| Date       | Milestone                                                        |
-|------------|------------------------------------------------------------------|
-| 2026-05-23 | Repo initialized, planning done                                  |
-| 2026-05-23 | Ubuntu 26.04 LTS installed, server hardened                      |
-| 2026-05-23 | Docker installed, AdGuard + NPM deployed                         |
-| 2026-05-24 | WireGuard deployed, remote access confirmed                      |
-| 2026-05-24 | Nextcloud 33 + Immich deployed, all services live                |
-| 2026-05-25 | Homarr, Portainer added                                          |
-| 2026-05-25 | Ntfy + Uptime Kuma deployed, monitoring live                     |
-| 2026-05-31 | Full network audit — DNS, UFW, WireGuard stack debugged and fixed |
+| Date       | Milestone                                                                  |
+|------------|----------------------------------------------------------------------------|
+| 2026-05-23 | Repo initialized, planning done                                            |
+| 2026-05-23 | Ubuntu 26.04 LTS installed, server hardened                                |
+| 2026-05-23 | Docker installed, AdGuard + NPM deployed                                   |
+| 2026-05-24 | WireGuard deployed, remote access confirmed                                |
+| 2026-05-24 | Nextcloud 33 + Immich deployed, all services live                          |
+| 2026-05-25 | Homarr, Portainer added                                                    |
+| 2026-05-25 | Ntfy + Uptime Kuma deployed, monitoring live                               |
+| 2026-05-31 | Full network audit — DNS, UFW, WireGuard stack debugged and fixed          |
+| 2026-06-04 | Music stack deployed — Navidrome, Lidarr, qBittorrent, Prowlarr, slskd    |
 
 ---
 
 ## Author
 
 **Maxim Simeonov Ivanov** — CS student building a homelab from scratch.  
-📧 [maksimivanov@tutamail.com](mailto:maksimivanov@tutamail.com)  
+📧 [maksimivanoff@tutamail.com](mailto:maksimivanoff@tutamail.com)  
 [github.com/MaximSimeonovIvanov](https://github.com/MaximSimeonovIvanov)

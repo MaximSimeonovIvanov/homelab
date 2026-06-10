@@ -1,70 +1,69 @@
-# Known Limitations & Future Improvements
+# Known Limitations & Current Issues
 
-This document tracks known issues, workarounds applied, and planned improvements.
-
----
-
-## WireGuard — Remote DNS
-
-**Issue:** When connecting remotely via WireGuard, `.home` hostnames don't resolve because the VPN DNS is set to `1.1.1.1` (Cloudflare) instead of AdGuard.
-
-**Why:** Setting AdGuard (`192.168.0.215`) as VPN DNS caused Android to use it even when the tunnel was inactive, breaking all internet connectivity.
-
-**Workaround:** Use direct IP:port to access services remotely (see [Remote Access Reference](#remote-access-reference) below).
-
-**Fix (when moving out):** Configure AdGuard to be reachable through the VPN tunnel and switch `WG_DEFAULT_DNS` back to `192.168.0.215`.
+This document tracks known issues, active workarounds, and things blocked on future hardware or infrastructure changes.
 
 ---
 
-## WireGuard — Android Split Tunnel
+## SSL/HTTPS — Local Services
 
-**Issue:** Android ignores simple `WG_ALLOWED_IPS` ranges and routes all traffic through the VPN.
-
-**Workaround:** Explicit IP range list in `WG_ALLOWED_IPS` that covers all public IP space except the home network ranges.
-
----
-
-## Nextcloud — Trusted Domain
-
-**Issue:** Nextcloud blocks access via raw IP address by default.
-
-**Fix applied:**
-```bash
-docker exec -it nextcloud php occ config:system:set trusted_domains 2 --value=192.168.0.215
-```
-
-**Future:** When `.home` DNS works remotely, access will be via hostname and this won't be needed.
-
----
-
-## SSL/HTTPS
-
-**Status:** Not configured. All services run on HTTP only.
+**Status:** Not configured. All `.home` services run on HTTP only.
 
 **Why skipped:** Self-signed certs for `.home` domains require installing a root CA certificate on every device. Not worth the complexity at this stage.
 
 **Fix (when moving out):** Set up a local CA with `mkcert`, install the root cert on all devices once, generate certs for all `.home` domains.
 
+**Note:** The public-facing site `sim-obleklo.bg` has proper Let's Encrypt SSL via Cloudflare DNS challenge. This limitation only applies to internal `.home` services.
+
 ---
 
-## Remote Access Reference
+## Router DNS — Not Pointing to AdGuard
 
-When connected via WireGuard on mobile data:
+**Status:** The router is shared. Its DNS still points to another device on the network, not to AdGuard. AdGuard is only used by devices configured manually (laptop and phone).
 
-| Service | Remote URL |
-|---------|-----------|
-| Nextcloud | `http://192.168.0.215:8080` |
-| Immich | `http://192.168.0.215:2283` |
-| AdGuard | `http://192.168.0.215:3000` |
-| WireGuard UI | `http://192.168.0.215:51821` |
-| Portainer | `http://192.168.0.215:9000` |
-| NPM | `http://192.168.0.215:81` |
+**Fix (when moving out):** Point the router's DHCP DNS setting to `192.168.0.215`. This gives every device on the network ad blocking and `.home` resolution automatically, without manual configuration per device.
+
+---
+
+## NPM — Custom Location Blocks Overwritten on Save
+
+**Status:** Active issue affecting `api.sim-obleklo.bg` static file serving.
+
+**What happens:** Every time a proxy host is saved through the NPM web UI, NPM regenerates the Nginx config file and injects `proxy_pass` into every custom location block, overriding any `alias` directive. This breaks static file serving for the Django admin.
+
+**Workaround:** After any NPM proxy host save, manually edit the conf file and reload Nginx:
+```bash
+sudo nano /opt/docker/npm/data/nginx/proxy_host/12.conf
+# Remove the injected proxy_pass from the /static/ location block
+docker exec nginx-proxy-manager nginx -s reload
+```
+
+**Permanent fix:** Move the `/static/` location block to NPM's server-level "Custom Nginx Configuration" field (gear icon on the proxy host) — NPM does not overwrite this field on save.
+
+---
+
+## Port 2222 Open to Internet
+
+**Status:** Port 2222 is open to the internet for GitHub Actions SSH deployments (workwear catalog CI/CD). fail2ban protects it, but it is an additional attack surface.
+
+**Review when moving out:** Consider restricting to a known IP range if GitHub Actions publishes its IP ranges, or switching to a different deployment method.
+
+---
+
+## Port 22 Open to Internet
+
+**Status:** SSH on port 22 is intentionally left open to the internet as a safety net — if WireGuard breaks while remote, SSH is the fallback to recover the server.
+
+**Review when moving out:** Once on own router with reliable network, consider restricting port 22 to VPN only (`10.8.0.0/24`). This eliminates the last internet-facing management port.
 
 ---
 
 ## Pending — Requires HDD
 
-- Move Immich uploads from SSD to HDD (`/mnt/data/immich`)
-- Move Nextcloud data from SSD to HDD (`/mnt/data/nextcloud`)
-- Enable Immich auto backup on mobile
-- Enable Nextcloud sync on mobile and laptop
+The 4TB HDD has not been purchased yet. Until it is, all persistent data lives on the 128GB boot SSD.
+
+- [ ] Install HDD, mount at `/mnt/data/`
+- [ ] Move Immich uploads: `/opt/docker/immich/uploads` → `/mnt/data/immich/`
+- [ ] Move Nextcloud data: `/opt/docker/nextcloud/data` → `/mnt/data/nextcloud/`
+- [ ] Move music library to HDD mount, update Navidrome and Lidarr volume paths
+- [ ] Enable Immich auto-backup on Pixel 9
+- [ ] Enable Nextcloud sync on phone and laptop

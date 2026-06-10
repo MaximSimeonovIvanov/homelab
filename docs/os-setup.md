@@ -49,7 +49,7 @@ Walk through the installer with these choices:
 ### Profile Setup
 - Your name: up to you
 - Server name (hostname): `homelab` (or whatever you chose — pick now, it's permanent)
-- Username: your choice (e.g. `maxim`)
+- Username: your choice (e.g. `<username>`)
 - Password: strong, you'll use this for `sudo`
 
 ### SSH
@@ -95,13 +95,13 @@ ssh-keygen -t ed25519 -C "homelab"
 Copy your public key to the server:
 
 ```bash
-ssh-copy-id your-username@server-ip
+ssh-copy-id <username>@<server-ip>
 ```
 
 Verify key login works:
 
 ```bash
-ssh your-username@server-ip
+ssh <username>@<server-ip>
 ```
 
 Once confirmed, disable password auth:
