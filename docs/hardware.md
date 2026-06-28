@@ -57,3 +57,13 @@ Reasons:
 - True backup strategy (3-2-1 rule) matters more than local redundancy at this scale
 
 Revisit RAID/mergerfs if a second drive is added in future.
+
+### Storage allocation (LVM) — [verified June 28]
+- `ubuntu-vg` is **fully allocated**: `vgs` shows `VFree 0`, `pvs` shows `PFree 0`.
+  Root (`ubuntu-lv`, ext4, mounted `/`) occupies the entire ~116 GB `sdb3` PV.
+- **Consequence for the 4 TB HDD plan:** growing `/` is impossible with the current
+  pool — there is no free space to `lvextend` into. The migration must be:
+  `vgextend ubuntu-vg <new-PV>` → `lvextend` root into the new space → `resize2fs`.
+  (PV → VG/LV → filesystem, bottom-up.)
+- Root usage is volatile (~26–31% across June 28); track consumers
+  (`/var/lib/docker` images, `/opt/docker` service data), not the percentage.

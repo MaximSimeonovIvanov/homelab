@@ -67,3 +67,14 @@ The 4TB HDD has not been purchased yet. Until it is, all persistent data lives o
 - [ ] Move music library to HDD mount, update Navidrome and Lidarr volume paths
 - [ ] Enable Immich auto-backup on Pixel 9
 - [ ] Enable Nextcloud sync on phone and laptop
+
+## Hardening and correction
+
+- **`max` is in the `docker` group → effectively root.** Docker-group members can
+  `docker run -v /:/host ...` and edit the host as root with no password — bypassing
+  the sudo speed bump. Convenient (rootless `docker ps`) but a real privilege fact to
+  weigh during hardening.
+- **OS update posture [verified June 28]:** 3 pending updates = `sg3-utils` family
+  point release (`…ubuntu3 → …ubuntu3.1`) — trivial, no service restart. Remaining
+  security coverage is ESM-gated (Ubuntu Pro). `apt upgrade` must run in `tmux`
+  (it can restart Docker → kill the wg-easy/SSH session, per the June 20 incident).
