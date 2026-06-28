@@ -22,7 +22,7 @@ Two mental models run through every chapter: the **layer cake** (each layer stan
 | Ch | Title | Status |
 |---|---|---|
 | 01 | [The Machine: Hardware, Firmware & Headless Operation](./01-the-machine.md) | ✅ |
-| 02 | The Operating System: Ubuntu Server (boot chain, systemd, filesystem & LVM, users, apt) | ⏳ planned |
+| 02 | [The Operating System: Ubuntu Server](./02-the-operating-system.md) (boot chain, systemd, filesystem & LVM, users, apt) | ✅ |
 
 ### Part II — Reaching the Box
 | Ch | Title | Status |
