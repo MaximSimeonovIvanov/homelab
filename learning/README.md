@@ -27,7 +27,7 @@ Two mental models run through every chapter: the **layer cake** (each layer stan
 ### Part II — Reaching the Box
 | Ch | Title | Status |
 |---|---|---|
-| 03 | Networking Fundamentals (IP, subnets, ports, LAN/WAN, NAT) | ⏳ planned |
+| 03 | [Networking Fundamentals](./03-networking.md) (IP, subnets, ports, LAN/WAN, NAT) | ✅ |
 | 04 | DNS: How Names Become Addresses (AdGuard, Cloudflare, `.home`) | ⏳ planned |
 | 05 | Remote Access: WireGuard + SSH (tunnels, keys, split-tunnel, VS Code Remote) | ⏳ planned |
 | 06 | The Host Firewall: UFW & Fail2ban (deny-by-default, VPN-only scoping) | ⏳ planned |
